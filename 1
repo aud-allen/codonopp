@@ -1,0 +1,115 @@
+
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Mar 17 17:56:04 2020
+
+@author: Audrey
+"""
+
+#this is a script that takes an amino acid sequence and turns it into a 
+#codon optimized version of that sequence
+
+x = 0
+
+#This is a list of the 20 1-letter codes for the amino acids
+amino_acids = ["A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y",]
+
+
+#this is a function that splits up the sequence by amino acid character
+#then it puts all those characters in a list
+def split(sequence): 
+    return list(sequence) 
+    
+
+#this is the new list of amino acids that the user entered
+sequence = input("Enter Amino Acid Sequence in FASTA Format: ")
+
+#even though FASTA format is all uppercase, this changes the string into
+#all uppercase letters in case the user entered lowercase
+sequence = sequence.upper()
+
+#makes the string into a list of amino acids 
+sequence_list = (split(sequence))
+
+
+#this is a function that checks if a list has elements that are not in another list
+#it returns 0 if all elements are in the second list
+#it returns a number is there are elements that are not in the second list   
+def checkSequence(seq1, seq2):
+    differences = set(seq1)-set(seq2)
+    differences = len(differences)
+    return int(differences)
+
+#calling the sequence check function to see if the user 
+#entered any characters that were not in the amino acids list
+callit = checkSequence(sequence_list, amino_acids)
+
+#checks if the FASTA entry contains any weird characters
+while callit != 0:
+    print("Error found, enter FASTA sequence again.")
+    sequence = input("Enter Amino Acid Sequence in FASTA Format: ")
+    sequence = sequence.upper()
+    sequence_list = (split(sequence))
+    callit = checkSequence(sequence_list, amino_acids)
+    
+
+
+#this prints a space
+print()
+
+
+#asks the user what cell type they want to optimize to
+#only lets them enter Ecoli or SF9
+x = 0 
+print("What cell type are you trying to optimize to?")
+while x == 0:
+    celltype = input("Please enter Ecoli or SF9 here: ")
+    cellist = ["Ecoli", "SF9"]
+    if celltype in cellist:
+        x = 1
+    
+
+#this is an empty list that will hold all the codons 
+newlist = []
+
+#These are the best codons to use for the 20 amino acids
+#The first one in the amino acid list, "A", corresponds to the first in each of these lists
+ecoli = ["GCG", "TGC", "GAT", "GAA", "TTT", "GGC", "CAT", "ATT", "AAA", "CTG", "ATG", "AAC", "CCG", "CAG", "CGT", "AGC", "ACG", "GTG", "TGG", "TAT"]
+sf9 = ["GCT", "TGC", "GAC", "GAG", "TTC", "GGT", "CAC", "ATC", "AAG", "CTG", "ATG", "AAC", "CCT", "CAG", "CGT", "TCC", "ACC", "GTG", "TGG", "TAC"]
+
+#if user selects E coli
+if celltype == cellist[0]:
+    #checks if character in FASTA is in amino acids list
+    #if it is, it adds the appropriate ecoli codon to a new list
+    for i in sequence_list:
+        for a in amino_acids:
+            if a == i:
+                number = amino_acids.index(a)
+                newlist.append(ecoli[number])
+      
+#if user selects SF9 
+else:
+    #checks if character in FASTA is in amino acids list
+    #if it is, it adds the appropriate ecoli codon to a new list
+    for i in sequence_list:
+        for a in amino_acids:
+            if a == i:
+                number = amino_acids.index(a)
+                newlist.append(sf9[number])
+                
+#delete the # in front of this code if you want the FASTA or CODON lists to print 
+#print()
+#print ("FASTA list: ")
+#print(sequence_list)
+
+#print()
+#print("Codon list: ")
+#print(newlist)
+
+#this makes the list back into a string, so it can be easily copy and pasted
+final = "".join(newlist)
+
+#this prints the codon-optimized sequence out for the user
+print (" ")
+print("The", celltype, "codon-optimized sequence is: ") 
+print(final)
